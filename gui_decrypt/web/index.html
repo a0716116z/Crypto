@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>說出你的密碼 @2022 copyrights reserved</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="index.css" />
+    <!-- eel.js , this is necessary  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script type="text/javascript" src="/eel.js"></script>
+  </head>
+
+  <body>
+    <div class="containar">
+      <h2>說出你的密碼 | 解密端</h2>
+      <div class="section">
+        <label class="input_area"
+          ><input type="file" id="input1" onchange="setname(this)" />
+          <div class="textblock">
+            <!-- <i class="fa-solid fa-circle-check"></i> -->
+          </div>
+          <p class="show-text">請放入要解密的檔案<p id="confirm1"></p></p>
+          <i class="fa-solid fa-lock large"></i>
+          <button class="call_python" onclick="upload_plaintext()">
+            upload 已加密檔案
+          </button>
+         
+        </label>
+        <label class="input_area">
+          <input
+            type="file"
+            id="input2"
+            onchange="setname(this)"
+          />
+          <div class="textblock">
+            <!-- <i class="fa-solid fa-circle-check"></i> -->
+             <p class="show-text"> 放入音檔作為解密金鑰<p id="confirmkey"></p></p>
+          </div>
+          <i class="fa-solid fa-key large"></i>
+          <button class="call_python" onclick="upload_click()">
+            upload 解密音檔
+          </button>
+         
+        </label>
+      </div>
+
+      <!-- 將返回的值 設定在這個<p>內  -->
+      <p id="return_val"></p>
+
+      <button class="call_python" onclick="btn_click()">
+        <i class="fa-solid fa-lock-open"></i> 進行解密</button>
+    </div>
+
+    <script type="text/javascript" src="./main.js"></script>
+    <script>
+      let data=null, filename, key=null,voicename;
+      function upload_plaintext() {
+        let selectedFile = document.getElementById("input1").files[0];
+        filename = selectedFile.name;
+        let fileReader = new FileReader();
+        fileReader.readAsDataURL(selectedFile);
+        // fileReader.readAsBinaryString(selectedFile);
+        fileReader.onload = function () {
+          // 將 ArrayBuffer 轉換為 字串
+          data = fileReader.result;
+          // console.log(data);
+          document.querySelector("#confirm1").innerHTML = '<i class="fa-solid fa-circle-check"/>加密檔案就緒';
+        };
+      }
+      function upload_click() {
+        let selectedFile = document.getElementById("input2").files[0];
+        let fileReader = new FileReader();
+        voicename=selectedFile.name
+        fileReader.readAsDataURL(selectedFile);
+        // fileReader.readAsBinaryString(selectedFile);
+        fileReader.onload = function () {
+          // 將 ArrayBuffer 轉換為 字串
+          key = fileReader.result;
+          // console.log(key);
+          document.querySelector("#confirmkey").innerHTML = '<i class="fa-solid fa-circle-check"/>金鑰檔案就緒';
+        };
+      }
+      function btn_click(){
+        let remind_node=document.querySelector("#return_val")
+        if (data && key){
+          send()
+          remind_node.classList.remove('red')
+          remind_node.classList.add('green')
+          remind_node.innerHTML='<i class="fa-solid fa-copy"/>解密進行中'
+          // document.querySelector("#return_val").textContent = '加密進行中';
+        }
+        else{
+          remind_node.classList.remove('green')
+          remind_node.classList.add('red')
+          remind_node.innerHTML='<i class="fa-solid fa-circle-exclamation"/>請確認資料都已上傳'
+          // document.querySelector("#return_val").textContent = '請確認資料都已上傳';
+        }
+
+      }
+      async function send() {
+        // console.log(selectedFile.mozFullPath);
+        
+        result = await eel.say_something(filename,data,key,voicename)();
+        document.querySelector("#return_val").innerHTML = '<i class="fa-solid fa-circle-check"/>'+result;
+
+        //呼叫的方式，就是加上eel.加上剛剛被expose PY function的名稱然後多加()輸入參數，最後加()取值
+        // result = await eel.say_something("Hello word", selectedFile.name)();
+      }
+      function setname(item) {
+        label = item.parentNode;
+        console.log("label", label);
+        text = label.getElementsByClassName("show-text");
+        let selectedFile = label.getElementsByTagName("input")[0].files[0];
+        text[0].innerText =selectedFile.name;
+      }
+      // .addEventListener("click", myFunction);
+       const input_areas=document.getElementsByClassName('input_area')
+      const active = () =>  droparea.classList.add("green-border");
+      const inactive = () => droparea.classList.remove("green-border");
+      const prevents = (e) => e.preventDefault();
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evtName => {   
+        Array.from(input_areas).forEach((area)=>{
+             area.addEventListener(evtName, prevents);
+          })  
+      });
+
+      // ['dragenter', 'dragover'].forEach(evtName => {
+      //   Array.from(input_areas).forEach((area)=>{
+      //       area.addEventListener(evtName, active);
+      //     })  
+      // });
+
+      // ['dragleave', 'drop'].forEach(evtName => {
+      //     Array.from(input_areas).forEach((area)=>{
+      //         area.addEventListener(evtName, inactive);
+      //       })  
+      // });
+      const handleDrop = (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        const node=e.target;
+        handleTransfer(node,files[0])
+      }
+      const handleTransfer=(node,selectedFile)=>{
+        let fileReader = new FileReader();
+        fileReader.readAsDataURL(selectedFile);
+        fileReader.onload = function () {
+          if (node.parentNode.querySelector("#confirm1")){
+            document.querySelector("#confirm1").innerHTML = '<i class="fa-solid fa-circle-check"/>加密檔案就緒';
+            data = fileReader.result;
+            filename = selectedFile.name;
+          }else{
+            document.querySelector("#confirmkey").innerHTML = '<i class="fa-solid fa-circle-check"/>金鑰檔案就緒';
+            key = fileReader.result;
+            voicename=selectedFile.name
+          }
+          text = node.parentNode.getElementsByClassName("show-text");
+          text[0].innerText =selectedFile.name;
+        };
+      }
+      Array.from(input_areas).forEach((area)=>{
+          area.addEventListener("drop", handleDrop);
+      })  
+    </script>
+  </body>
+</html>

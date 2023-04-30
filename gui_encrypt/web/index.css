@@ -1,0 +1,88 @@
+*{
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-family: '微軟正黑體';
+}
+input{
+  margin: 0.3rem;
+  display: none;
+}
+body{
+  background: linear-gradient(45deg,rgb(222, 234, 222),rgb(212, 222, 233)) ;
+}
+.containar{
+  padding-top: 50px;
+  display: flex;
+  text-align: center;
+  width: 80%;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+label{
+  background: #fff;
+  margin-top: 1rem;
+  width: 200px;
+  /* height: 80px; */
+  padding: .5rem 1rem ;
+  cursor: pointer;
+  /* background-color: aquamarine; */
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+}
+.section{
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 2.2rem;
+}
+button{
+  width: 100%;
+  padding: 10px 20px ;
+  background: rgb(129, 195, 153);
+  border: none;
+  border-radius:0 0 5px 5px;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  /* box-shadow: rgba(9, 30, 66, 0.1) 0px .5px .5px, rgba(9, 30, 66, 0.03) 0px 0px .5px .5px; */
+}
+.show-text{
+  margin: .8rem;
+  color: rgb(20, 52, 39);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all .3s;
+}
+.large{
+  font-size: 100px;
+  /* background: rgb(255, 255, 255); */
+  border-radius: 5px;
+  color: rgb(77, 110, 139);
+  padding: 0.5rem 2rem;
+  display: block;
+  margin: 20px;
+}
+#return_val{
+  font-weight: 500;
+  margin-bottom: 30px;
+  transition: .4s all ease-in-out;
+  background: rgb(255, 255, 255);
+  display: block;
+  border-radius: 3px;
+  padding: 5px 15px;
+}
+.red{
+  background: rgb(234, 175, 175) !important;
+}
+.green{
+  background: rgb(182, 208, 225) !important;
+}
